@@ -63,43 +63,18 @@ namespace School
                 case Key.Enter:
                     // TODO: Exercise 1: Task 1a: Copy code for editing the details for that student
                     Student student = this.studentsList.SelectedItem as Student;
-
-                    // TODO: Exercise 1: Task 3d: Refactor as the EditStudent method
-
-                    // Use the StudentsForm to display and edit the details of the student
-                    StudentForm sf = new StudentForm();
-
-                    // Set the title of the form and populate the fields on the form with the details of the student           
-                    sf.Title = "Edit Student Details";
-                    sf.firstName.Text = student.FirstName;
-                    sf.lastName.Text = student.LastName;
-                    sf.dateOfBirth.Text = student.DateOfBirth.ToString("d"); // Format the date to omit the time element
-
-                    // Display the form
-                    if (sf.ShowDialog().Value)
-                    {
-                        // When the user closes the form, copy the details back to the student
-                        student.FirstName = sf.firstName.Text;
-                        student.LastName = sf.lastName.Text;
-                        student.DateOfBirth = DateTime.Parse(sf.dateOfBirth.Text);
-
-                        // Enable saving (changes are not made permanent until they are written back to the database)
-                        saveChanges.IsEnabled = true;
-                    }
+                    EditStudent(student);
                     break;
 
                 // If the user pressed Insert, add a new student
                 case Key.Insert:
-
-                    sf = AddNewStudent();
+                    AddNewStudent();
                     break;
 
                 // If the user pressed Delete, remove the currently selected student
                 case Key.Delete:
                     student = this.studentsList.SelectedItem as Student;
                     RemoveStudent(student);
-
-                    
                     break;
             }
         }
