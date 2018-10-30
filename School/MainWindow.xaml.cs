@@ -107,9 +107,9 @@ namespace School
                 case Key.Delete: student = this.studentsList.SelectedItem as Student;
                     // TODO: Exercise 3: Task 2a: Prompt the user to confirm that the student should be removed
                     MessageBoxResult response = MessageBox.Show(
-                    string.Format("Remove {0}", student.FirstName + " " + student.LastName),
-                    "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question,
-                    MessageBoxResult.No);
+                        string.Format("Remove {0}", student.FirstName + " " + student.LastName),
+                        "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question,
+                        MessageBoxResult.No);
                     // TODO: Exercise 3: Task 3a: If the user clicked Yes, remove the student from the database
                     if (response == MessageBoxResult.Yes)
                     {
@@ -143,7 +143,23 @@ namespace School
         public object Convert(object value, Type targetType, object parameter,
                               System.Globalization.CultureInfo culture)
         {
-            return "";
+            // Convert the date of birth provided in the value parameter and convert to the age of the student in years
+            // TODO: Exercise 4: Task 2a: Check that the value provided is not null. If it is, return an empty string
+            if (value != null)
+            {
+                // TODO: Exercise 4: Task 2b: Convert the value provided into a DateTime value
+                DateTime studentDateOfBirth = (DateTime)value;
+                // TODO: Exercise 4: Task 2c: Work out the difference between the current date and the value provided
+                TimeSpan difference = DateTime.Now.Subtract(studentDateOfBirth);
+                // TODO: Exercise 4: Task 2d: Convert this result into a number of years
+                int ageInYears = (int)(difference.Days / 365.25);
+                // TODO: Exercise 4: Task 2e: Convert the number of years into a string and return it
+                return ageInYears.ToString();
+            }
+            else
+            {
+                return "";
+            }
         }
 
         #region Predefined code
