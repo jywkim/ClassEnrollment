@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
 using School.Data;
-using System.Globalization;
+
 
 namespace School
 {
@@ -59,73 +59,99 @@ namespace School
         {
             switch (e.Key)
             {
-                // TODO: Exercise 1: Task 1a: If the user pressed Enter, edit the details for the currently selected student
-                case Key.Enter: Student student = this.studentsList.SelectedItem as Student;
-                    // TODO: Exercise 1: Task 2a: Use the StudentsForm to display and edit the details of the student
+                // If the user pressed Enter, edit the details for the currently selected student
+                case Key.Enter:
+                    // TODO: Exercise 1: Task 1a: Copy code for editing the details for that student
+                    Student student = this.studentsList.SelectedItem as Student;
+
+                    // TODO: Exercise 1: Task 3d: Refactor as the EditStudent method
+
+                    // Use the StudentsForm to display and edit the details of the student
                     StudentForm sf = new StudentForm();
-                    // TODO: Exercise 1: Task 2b: Set the title of the form and populate the fields on the form with the details of the student
+
+                    // Set the title of the form and populate the fields on the form with the details of the student           
                     sf.Title = "Edit Student Details";
                     sf.firstName.Text = student.FirstName;
                     sf.lastName.Text = student.LastName;
-                    sf.dateOfBirth.Text = student.DateOfBirth.ToString("d");
-                    // TODO: Exercise 1: Task 3a: Display the form
+                    sf.dateOfBirth.Text = student.DateOfBirth.ToString("d"); // Format the date to omit the time element
+
+                    // Display the form
                     if (sf.ShowDialog().Value)
                     {
-                        // TODO: Exercise 1: Task 3b: When the user closes the form, copy the details back to the student
+                        // When the user closes the form, copy the details back to the student
                         student.FirstName = sf.firstName.Text;
                         student.LastName = sf.lastName.Text;
-                        student.DateOfBirth = DateTime.ParseExact(sf.dateOfBirth.Text, "MM/dd/yyyy", CultureInfo.InvariantCulture);
-                        // TODO: Exercise 1: Task 3c: Enable saving (changes are not made permanent until they are written back to the database)
+                        student.DateOfBirth = DateTime.Parse(sf.dateOfBirth.Text);
+
+                        // Enable saving (changes are not made permanent until they are written back to the database)
                         saveChanges.IsEnabled = true;
                     }
                     break;
 
-                // TODO: Exercise 2: Task 1a: If the user pressed Insert, add a new student
+                // If the user pressed Insert, add a new student
                 case Key.Insert:
-                    // TODO: Exercise 2: Task 2a: Use the StudentsForm to get the details of the student from the user
+
+                    // TODO: Exercise 1: Task 3a: Refactor as the addNewStudent method
+
+                    // Use the StudentsForm to get the details of the student from the user
                     sf = new StudentForm();
-                    // TODO: Exercise 2: Task 2b: Set the title of the form to indicate which class the student will be added to (the class for the currently selected teacher)
+
+                    // Set the title of the form to indicate which class the student will be added to (the class for the currently selected teacher)
                     sf.Title = "New Student for Class " + teacher.Class;
-                    // TODO: Exercise 2: Task 3a: Display the form and get the details of the new student
+
+                    // Display the form and get the details of the new student
                     if (sf.ShowDialog().Value)
                     {
-                        // TODO: Exercise 2: Task 3b: When the user closes the form, retrieve the details of the student from the form and use them to create a new Student object
+                        // When the user closes the form, retrieve the details of the student from the form
+                        // and use them to create a new Student object
                         Student newStudent = new Student();
                         newStudent.FirstName = sf.firstName.Text;
                         newStudent.LastName = sf.lastName.Text;
-                        newStudent.DateOfBirth = DateTime.ParseExact(sf.dateOfBirth.Text, "MM/dd/yyyy", CultureInfo.InvariantCulture);
-                        // TODO: Exercise 2: Task 4a: Assign the new student to the current teacher
+                        newStudent.DateOfBirth = DateTime.Parse(sf.dateOfBirth.Text);
+
+                        // Assign the new student to the current teacher
                         this.teacher.Students.Add(newStudent);
-                        // TODO: Exercise 2: Task 4b: Add the student to the list displayed on the form
+
+                        // Add the student to the list displayed on the form
                         this.studentsInfo.Add(newStudent);
-                        // TODO: Exercise 2: Task 4c: Enable saving (changes are not made permanent until they are written back to the database)
+
+                        // Enable saving (changes are not made permanent until they are written back to the database)
                         saveChanges.IsEnabled = true;
                     }
                     break;
 
-                // TODO: Exercise 3: Task 1a: If the user pressed Delete, remove the currently selected student
-                case Key.Delete: student = this.studentsList.SelectedItem as Student;
-                    // TODO: Exercise 3: Task 2a: Prompt the user to confirm that the student should be removed
+                // If the user pressed Delete, remove the currently selected student
+                case Key.Delete:
+                    student = this.studentsList.SelectedItem as Student;
+
+                    // TODO: Exercise 1: Task 3b: Refactor as the removeStudent method
+
+                    // Prompt the user to confirm that the student should be removed
                     MessageBoxResult response = MessageBox.Show(
-                        string.Format("Remove {0}", student.FirstName + " " + student.LastName),
+                        String.Format("Remove {0}", student.FirstName + " " + student.LastName),
                         "Confirm", MessageBoxButton.YesNo, MessageBoxImage.Question,
                         MessageBoxResult.No);
-                    // TODO: Exercise 3: Task 3a: If the user clicked Yes, remove the student from the database
+
+                    // If the user clicked Yes, remove the student from the database
                     if (response == MessageBoxResult.Yes)
                     {
                         this.schoolContext.Students.DeleteObject(student);
-                        // TODO: Exercise 3: Task 3b: Enable saving (changes are not made permanent until they are written back to the database)
+
+                        // Enable saving (changes are not made permanent until they are written back to the database)
                         saveChanges.IsEnabled = true;
                     }
                     break;
             }
         }
 
-        #region Predefined code
+        // TODO: Exercise 1: Task 3c: create Edit student method
 
+
+
+        // TODO: Exercise 1: Task 1b: If the user double-clicks a student, edit the details for that student
         private void studentsList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
- 
+
         }
 
         // Save changes back to the database and make them permanent
@@ -133,8 +159,6 @@ namespace School
         {
 
         }
-
-        #endregion
     }
 
     [ValueConversion(typeof(string), typeof(Decimal))]
@@ -144,16 +168,11 @@ namespace School
                               System.Globalization.CultureInfo culture)
         {
             // Convert the date of birth provided in the value parameter and convert to the age of the student in years
-            // TODO: Exercise 4: Task 2a: Check that the value provided is not null. If it is, return an empty string
             if (value != null)
             {
-                // TODO: Exercise 4: Task 2b: Convert the value provided into a DateTime value
                 DateTime studentDateOfBirth = (DateTime)value;
-                // TODO: Exercise 4: Task 2c: Work out the difference between the current date and the value provided
                 TimeSpan difference = DateTime.Now.Subtract(studentDateOfBirth);
-                // TODO: Exercise 4: Task 2d: Convert this result into a number of years
                 int ageInYears = (int)(difference.Days / 365.25);
-                // TODO: Exercise 4: Task 2e: Convert the number of years into a string and return it
                 return ageInYears.ToString();
             }
             else
